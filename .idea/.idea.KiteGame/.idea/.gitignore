@@ -1,0 +1,13 @@
+﻿# Default ignored files
+/shelf/
+/workspace.xml
+# Rider ignored files
+/contentModel.xml
+/projectSettingsUpdater.xml
+/.idea.KiteGame.iml
+/modules.xml
+# Datasource local storage ignored files
+/../../../../../../../:\Projetos\KiteGameProject\KiteGame\.idea\.idea.KiteGame\.idea/dataSources/
+/dataSources.local.xml
+# Editor-based HTTP Client requests
+/httpRequests/
