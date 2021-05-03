@@ -14,7 +14,7 @@ public class RopeRoot : MonoBehaviour
     protected List<Transform> CopyDestination;
     protected static GameObject RigidBodyContainer;
 
-    void Awake()
+    private void Awake()
     {
         if (RigidBodyContainer == null)
         {
@@ -67,9 +67,9 @@ public class RopeRoot : MonoBehaviour
         }
     }
 
-    public void Update()
+    private void Update()
     {
-        for (int i = 0; i < CopySource.Count; i++)
+        for (var i = 0; i < CopySource.Count; i++)
         {
             CopyDestination[i].position = CopySource[i].position + PositionOffset;
             CopyDestination[i].rotation = CopySource[i].rotation * Quaternion.Euler(RotationOffset);
