@@ -7,39 +7,51 @@ public class KiteController : MonoBehaviour
     [SerializeField] private float speed;
     [SerializeField] private float maxSpeed;
     [SerializeField] private Transform player;
-    private float tapCooldownTime = 0.5f;
 
+    private WindController _windController;
+    private Vector3 _windDirectionV3;
+    private float _globalWindSpeed;
+    private float tapCooldownTime = 0.5f;
     private Transform _kiteTransform;
     private Rigidbody _rb;
     private Vector2 _movement;
     private bool _canTap;
 
     private void Awake()
-    { 
+    {
         _rb = GetComponent<Rigidbody>();
         _kiteTransform = GetComponent<Transform>();
-    } 
+    }
 
-    private void Start() => _canTap = true;
-    
+    private void Start()
+    {
+        _windController = FindObjectOfType<WindController>();
+        _canTap = true;
+    }
+
     private void Update()
     {
+        SetKiteWindDirection();
+
         _kiteTransform.LookAt(player);
         _movement = new Vector2(0, Input.GetAxis("Vertical"));
 
         if (Input.GetKeyDown(KeyCode.A))
         {
-            MoveKite(new Vector2(4,4));
+            MoveKite(new Vector2(4, 4));
         }
         
         else if (Input.GetKeyDown(KeyCode.D))
         {
-            MoveKite(new Vector2(-4,4));
+            MoveKite(new Vector2(-4, 4));
         }
-    } 
+        //TODO fix the addforce direction of the kite, by the reason right now for testing purposes the values are hardcoded to 4 and -4
+    }
 
     private void FixedUpdate()
     {
+        _rb.AddForce(_windDirectionV3 * _globalWindSpeed, ForceMode.Impulse);
+
         MoveKite(_movement);
     }
 
@@ -58,6 +70,7 @@ public class KiteController : MonoBehaviour
             currentTime += Time.deltaTime;
             yield return null;
         }
+
         _canTap = true;
     }
 
@@ -69,5 +82,15 @@ public class KiteController : MonoBehaviour
         Debug.Log("TAP");
         _movement = new Vector2(-Input.GetAxisRaw("Horizontal"), Input.GetAxis("Vertical"));
         StartCoroutine(LerpCooldownValue());
+    }
+
+    private void SetKiteWindDirection()
+    {
+        _globalWindSpeed = _windController.GetGlobalWindSpeed();
+        var globalWindDirection = _windController.GetGlobalWindDirection();
+
+        _windDirectionV3 = new Vector3(globalWindDirection.transform.position.x - transform.position.x, _globalWindSpeed,
+            globalWindDirection.transform.position.z - transform.position.z);
+        _windDirectionV3 = _windDirectionV3.normalized;
     }
 }
