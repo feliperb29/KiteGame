@@ -695,8 +695,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed77f52a8636c3943854c6c8db25853d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  windSpeed: 0
-  airDirection: {fileID: 1147402456}
+  windSpeed: 0.1
+  windDirection: {fileID: 1147402456}
 --- !u!4 &1867952514
 Transform:
   m_ObjectHideFlags: 0
@@ -775,5 +775,3 @@ MonoBehaviour:
   speed: 100
   maxSpeed: 0
   player: {fileID: 1603898951}
-  airDirection: {fileID: 1147402456}
-  airSpeed: 0.1
