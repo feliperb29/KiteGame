@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using UnityEngine;
+using UnityEditor;
 
 [RequireComponent(typeof(Rigidbody))]
 public class KiteController : MonoBehaviour
@@ -10,8 +11,7 @@ public class KiteController : MonoBehaviour
 
     private WindController _windController;
     private Vector3 _windDirectionV3;
-    private float _globalWindSpeed;
-    private float tapCooldownTime = 0.5f;
+    private float _tapCooldownTime = 0.5f;
     private Transform _kiteTransform;
     private Rigidbody _rb;
     private Vector2 _movement;
@@ -25,13 +25,19 @@ public class KiteController : MonoBehaviour
 
     private void Start()
     {
-        _windController = FindObjectOfType<WindController>();
         _canTap = true;
+        _windController = FindObjectOfType<WindController>();
+        
+        if (!_windController)
+        {
+            Debug.LogError("Wind Controller GameObject not found.");
+            EditorApplication.isPlaying = false;
+        }
     }
 
     private void Update()
     {
-        SetKiteWindDirection();
+        SetKiteDirection();
 
         _kiteTransform.LookAt(player);
         _movement = new Vector2(0, Input.GetAxis("Vertical"));
@@ -45,12 +51,14 @@ public class KiteController : MonoBehaviour
         {
             MoveKite(new Vector2(-4, 4));
         }
-        //TODO fix the addforce direction of the kite, by the reason right now for testing purposes the values are hardcoded to 4 and -4
+        //TODO fix the addforce mechanic and direction of the kite, by the reason right now for testing purposes the values are hardcoded to 4 and -4
+        //and also the way its working at the same time with MoveKite call in Update() and FixedUpdate() is very bad 
     }
 
     private void FixedUpdate()
     {
-        _rb.AddForce(_windDirectionV3 * _globalWindSpeed, ForceMode.Impulse);
+        _rb.AddForce(_windDirectionV3 * _windController.GlobalWindSpeed, ForceMode.Impulse);
+        //_rb.AddForce(new Vector2(_windDirectionV3.x * _globalWindSpeed, 0), ForceMode.Impulse);
 
         MoveKite(_movement);
     }
@@ -65,7 +73,8 @@ public class KiteController : MonoBehaviour
     private IEnumerator LerpCooldownValue()
     {
         float currentTime = 0;
-        while (currentTime < tapCooldownTime)
+        
+        while (currentTime < _tapCooldownTime)
         {
             currentTime += Time.deltaTime;
             yield return null;
@@ -77,20 +86,21 @@ public class KiteController : MonoBehaviour
     private void TapSystem()
     {
         if (!_canTap)
+        {
             return;
+        }
+
         _canTap = false;
         Debug.Log("TAP");
         _movement = new Vector2(-Input.GetAxisRaw("Horizontal"), Input.GetAxis("Vertical"));
         StartCoroutine(LerpCooldownValue());
     }
 
-    private void SetKiteWindDirection()
+    private void SetKiteDirection()
     {
-        _globalWindSpeed = _windController.GetGlobalWindSpeed();
-        var globalWindDirection = _windController.GetGlobalWindDirection();
-
-        _windDirectionV3 = new Vector3(globalWindDirection.transform.position.x - transform.position.x, _globalWindSpeed,
-            globalWindDirection.transform.position.z - transform.position.z);
+        _windDirectionV3 = new Vector3(_windController.GlobalWindDirection.transform.position.x - transform.position.x, _windController.GlobalWindSpeed,
+            _windController.GlobalWindDirection.transform.position.z - transform.position.z);
+       
         _windDirectionV3 = _windDirectionV3.normalized;
     }
 }
