@@ -8,7 +8,7 @@ public class DistanceJoint3D : MonoBehaviour {
     public float Spring = 0.1f;
     public float Damper = 5f;
 
-    protected Rigidbody Rigidbody;
+    private Rigidbody Rigidbody;
 
     void Awake()
     {
@@ -18,7 +18,9 @@ public class DistanceJoint3D : MonoBehaviour {
     void Start()
     {
         if (DetermineDistanceOnStart && ConnectedRigidbody != null)
+        {
             Distance = Vector3.Distance(Rigidbody.position, ConnectedRigidbody.position);
+        }
     }
 
     void FixedUpdate()

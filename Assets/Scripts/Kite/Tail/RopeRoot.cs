@@ -10,9 +10,9 @@ public class RopeRoot : MonoBehaviour
     public Vector3 RotationOffset;
     public Vector3 PositionOffset;
 
-    protected List<Transform> CopySource;
-    protected List<Transform> CopyDestination;
-    protected static GameObject RigidBodyContainer;
+    private List<Transform> CopySource;
+    private List<Transform> CopyDestination;
+    private static GameObject RigidBodyContainer;
 
     private void Awake()
     {
@@ -21,7 +21,6 @@ public class RopeRoot : MonoBehaviour
             RigidBodyContainer = new GameObject("RopeRigidbodyContainer");
             RigidBodyContainer.transform.parent = transform.root;
         }
-
 
         CopySource = new List<Transform>();
         CopyDestination = new List<Transform>();
