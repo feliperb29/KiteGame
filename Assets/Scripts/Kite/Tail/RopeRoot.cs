@@ -3,29 +3,28 @@ using UnityEngine;
 
 public class RopeRoot : MonoBehaviour
 {
-    public float RigidbodyMass = 1f;
-    public float ColliderRadius = 0.1f;
-    public float JointSpring = 0.1f;
-    public float JointDamper = 5f;
-    public Vector3 RotationOffset;
-    public Vector3 PositionOffset;
+    [SerializeField] private float rigidbodyMass = 1f;
+    [SerializeField] private float colliderRadius = 0.1f;
+    [SerializeField] private float jointSpring = 0.1f;
+    [SerializeField] private float jointDamper = 5f;
+    [SerializeField] private Vector3 rotationOffset;
+    [SerializeField] private Vector3 positionOffset;
 
     private List<Transform> CopySource;
     private List<Transform> CopyDestination;
-    private static GameObject RigidBodyContainer;
+    private static GameObject rigidBodyContainer;
 
     private void Awake()
     {
-        if (RigidBodyContainer == null)
+        if (!rigidBodyContainer)
         {
-            RigidBodyContainer = new GameObject("RopeRigidbodyContainer");
-            RigidBodyContainer.transform.parent = transform.root;
+            rigidBodyContainer = new GameObject("RopeRigidbodyContainer");
+            rigidBodyContainer.transform.parent = transform.root;
         }
 
         CopySource = new List<Transform>();
         CopyDestination = new List<Transform>();
 
-        //add children
         AddChildren(transform);
     }
 
@@ -35,33 +34,32 @@ public class RopeRoot : MonoBehaviour
         {
             var child = parent.GetChild(i);
             var representative = new GameObject(child.gameObject.name);
-            representative.transform.parent = RigidBodyContainer.transform;
+            representative.transform.parent = rigidBodyContainer.transform;
 
             //rigidbody
             var childRigidbody = representative.gameObject.AddComponent<Rigidbody>();
             childRigidbody.useGravity = true;
             childRigidbody.isKinematic = false;
             childRigidbody.freezeRotation = true;
-            childRigidbody.mass = RigidbodyMass;
+            childRigidbody.mass = rigidbodyMass;
 
             //collider
             var collider = representative.gameObject.AddComponent<SphereCollider>();
             collider.center = Vector3.zero;
-            collider.radius = ColliderRadius;
+            collider.radius = colliderRadius;
 
             //DistanceJoint
             var joint = representative.gameObject.AddComponent<DistanceJoint3D>();
-            joint.ConnectedRigidbody = parent;
-            joint.DetermineDistanceOnStart = true;
-            joint.Spring = JointSpring;
-            joint.Damper = JointDamper;
-            joint.DetermineDistanceOnStart = false;
-            joint.Distance = Vector3.Distance(parent.position, child.position);
+            joint.connectedRigidbody = parent;
+            joint.determineDistanceOnStart = true;
+            joint.spring = jointSpring;
+            joint.damper = jointDamper;
+            joint.determineDistanceOnStart = false;
+            joint.distance = Vector3.Distance(parent.position, child.position);
 
             //add copy source
             CopySource.Add(representative.transform);
             CopyDestination.Add(child);
-
             AddChildren(child);
         }
     }
@@ -70,8 +68,8 @@ public class RopeRoot : MonoBehaviour
     {
         for (var i = 0; i < CopySource.Count; i++)
         {
-            CopyDestination[i].position = CopySource[i].position + PositionOffset;
-            CopyDestination[i].rotation = CopySource[i].rotation * Quaternion.Euler(RotationOffset);
+            CopyDestination[i].position = CopySource[i].position + positionOffset;
+            CopyDestination[i].rotation = CopySource[i].rotation * Quaternion.Euler(rotationOffset);
         }
     }
 }

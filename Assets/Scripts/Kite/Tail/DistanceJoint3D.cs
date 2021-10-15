@@ -2,36 +2,36 @@ using UnityEngine;
 
 public class DistanceJoint3D : MonoBehaviour {
 
-    public Transform ConnectedRigidbody;
-    public bool DetermineDistanceOnStart = true;
-    public float Distance;
-    public float Spring = 0.1f;
-    public float Damper = 5f;
+    public Transform connectedRigidbody;
+    public bool determineDistanceOnStart = true;
+    public float distance;
+    public float spring = 0.1f;
+    public float damper = 5f;
 
-    private Rigidbody Rigidbody;
+    private Rigidbody _rigidbody;
 
-    void Awake()
+    private void Awake()
     {
-        Rigidbody = GetComponent<Rigidbody>();
+        _rigidbody = GetComponent<Rigidbody>();
     }
 
-    void Start()
+    private void Start()
     {
-        if (DetermineDistanceOnStart && ConnectedRigidbody != null)
+        if (determineDistanceOnStart && connectedRigidbody)
         {
-            Distance = Vector3.Distance(Rigidbody.position, ConnectedRigidbody.position);
+            distance = Vector3.Distance(_rigidbody.position, connectedRigidbody.position);
         }
     }
 
-    void FixedUpdate()
+    private void FixedUpdate()
     {
-        var connection = Rigidbody.position - ConnectedRigidbody.position;
-        var distanceDiscrepancy = Distance - connection.magnitude;
+        var connection = _rigidbody.position - connectedRigidbody.position;
+        var distanceDiscrepancy = distance - connection.magnitude;
 
-        Rigidbody.position += distanceDiscrepancy * connection.normalized;
+        _rigidbody.position += distanceDiscrepancy * connection.normalized;
 
-        var velocityTarget = connection + (Rigidbody.velocity + Physics.gravity * Spring);
+        var velocityTarget = connection + (_rigidbody.velocity + Physics.gravity * spring);
         var projectOnConnection = Vector3.Project(velocityTarget, connection);
-        Rigidbody.velocity = (velocityTarget - projectOnConnection) / (1 + Damper * Time.fixedDeltaTime);
+        _rigidbody.velocity = (velocityTarget - projectOnConnection) / (1 + damper * Time.fixedDeltaTime);
     }
 }

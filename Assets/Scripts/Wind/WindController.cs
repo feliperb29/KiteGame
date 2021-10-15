@@ -2,7 +2,7 @@
 
 public class WindController : MonoBehaviour
 {
-    //Maybe is better to specify the windSpeed to different axis, to make more sense of how air physics works
+    //TODO Maybe is better to use the value from the windSpeed in more than one axis only, this way will make more sense of how air physics works
 
     [SerializeField] private float windSpeedStartValue;
     [SerializeField] private Transform windDirectionStartValue;
@@ -16,8 +16,8 @@ public class WindController : MonoBehaviour
         GlobalWindDirection = windDirectionStartValue;
     }
 
-    private void UpdateWind()
+    private void UpdateWindValues()
     {
-        //Here update the actual windSpeed and windDirection during the gameplay
+        //Update the actual windSpeed and windDirection during the gameplay here
     }
 }

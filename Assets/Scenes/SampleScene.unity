@@ -401,12 +401,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1583ba20602617447b3952a223e42ba8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  RigidbodyMass: 1
-  ColliderRadius: 0.1
-  JointSpring: 0.1
-  JointDamper: 20
-  RotationOffset: {x: 180, y: 0, z: 0}
-  PositionOffset: {x: 0, y: 0, z: 0}
+  rigidbodyMass: 1
+  colliderRadius: 0.1
+  jointSpring: 0.1
+  jointDamper: 20
+  rotationOffset: {x: 180, y: 0, z: 0}
+  positionOffset: {x: 0, y: 0, z: 0}
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
