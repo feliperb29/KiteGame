@@ -35,6 +35,8 @@ public class KiteController : MonoBehaviour
             Debug.LogError("Wind Controller GameObject not found.");
             EditorApplication.isPlaying = false;
         }
+        
+        Debug.Log("This is a remind that the player object cant move because I set the boolean to do it in the FirstPersonAIO Moviment Setup.");
     }
 
     private void Update()
