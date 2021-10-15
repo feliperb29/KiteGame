@@ -36,7 +36,7 @@ public class KiteController : MonoBehaviour
             EditorApplication.isPlaying = false;
         }
         
-        Debug.Log("This is a remind that the player object cant move because I set the boolean to do it in the FirstPersonAIO Moviment Setup.");
+        Debug.LogWarning("This is a remind that the player object cant move because I set the boolean to do it in the FirstPersonAIO Moviment Setup.");
     }
 
     private void Update()
