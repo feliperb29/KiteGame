@@ -7,25 +7,27 @@ public class KiteController : MonoBehaviour
 {
     [SerializeField] private float speed;
     [SerializeField] private float maxSpeed;
-    [SerializeField] private float tapCooldownTime = 0.5f;
+    [SerializeField] private float tapCooldownTime;
     [SerializeField] private Transform player;
 
     private WindController _windController;
-    private Vector3 _windDirectionV3;
+    private Vector3 _windDirection;
+    private Vector2 _verticalkiteMovement;
     private Transform _kiteTransform;
     private Rigidbody _rigidBody;
-    private Vector2 _movement;
+    private WaitForSeconds _waitForTap;
     private bool _canTap;
 
     private void Awake()
     {
         _rigidBody = GetComponent<Rigidbody>();
         _kiteTransform = GetComponent<Transform>();
+        _waitForTap = new WaitForSeconds(tapCooldownTime);
+        _canTap = true;
     }
 
     private void Start()
     {
-        _canTap = true;
         _windController = FindObjectOfType<WindController>();
         
         if(!_windController)
@@ -39,52 +41,48 @@ public class KiteController : MonoBehaviour
     {
         SetKiteDirection();
         _kiteTransform.LookAt(player);
-        _movement = new Vector2(0, Input.GetAxis("Vertical"));
+        _verticalkiteMovement = new Vector2(0, Input.GetAxis("Vertical"));
 
         //TODO fix the addforce mechanic and direction of the kite, by the reason right now for testing purposes the values are hardcoded to 4 and -4
-        if (Input.GetKeyDown(KeyCode.A))
+        if (_canTap && Input.GetKeyDown(KeyCode.A))
         {
             MoveKite(new Vector2(4, 4));
+            StartCoroutine(WaitForTapCooldown());
         }
         
-        else if(Input.GetKeyDown(KeyCode.D))
+        else if(_canTap && Input.GetKeyDown(KeyCode.D))
         {
             MoveKite(new Vector2(-4, 4));
+            StartCoroutine(WaitForTapCooldown());
         }
     }
 
     private void FixedUpdate()
     {
-        _rigidBody.AddForce(_windDirectionV3 * _windController.GlobalWindSpeed, ForceMode.Impulse);
-        MoveKite(_movement);
+        _rigidBody.AddForce(_windDirection * _windController.GlobalWindSpeed, ForceMode.Impulse);
+        MoveKite(_verticalkiteMovement);
     }
 
     private void MoveKite(Vector2 direction)
     {
-        //Maybe the hardcoded values here could be serialized to be easier to update it in the inspector.
+        //Maybe the hardcoded numbers here could be serialized to be easier to update it in the inspector.
         _rigidBody.AddForce(new Vector2(direction.x * 4, direction.y), ForceMode.Impulse);
         _rigidBody.velocity *= 0.9f;
         _rigidBody.angularVelocity *= 0.9f;
     }
 
-    private IEnumerator LerpCooldownValue()
+    private IEnumerator WaitForTapCooldown()
     {
-        float currentTime = 0;
-        
-        while(currentTime < tapCooldownTime)
-        {
-            currentTime += Time.deltaTime;
-            yield return null;
-        }
-
+        _canTap = false;
+        yield return _waitForTap;
         _canTap = true;
     }
 
     private void SetKiteDirection()
     {
-        _windDirectionV3 = new Vector3(_windController.GlobalWindDirection.transform.position.x - transform.position.x, _windController.GlobalWindSpeed,
+        _windDirection = new Vector3(_windController.GlobalWindDirection.transform.position.x - transform.position.x, _windController.GlobalWindSpeed,
             _windController.GlobalWindDirection.transform.position.z - transform.position.z);
        
-        _windDirectionV3 = _windDirectionV3.normalized;
+        _windDirection = _windDirection.normalized;
     }
 }

@@ -774,4 +774,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 4
   maxSpeed: 0
+  tapCooldownTime: 0.15
   player: {fileID: 1603898951}

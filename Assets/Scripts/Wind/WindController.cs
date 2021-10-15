@@ -10,14 +10,12 @@ public class WindController : MonoBehaviour
     public float GlobalWindSpeed { get; private set; }
     public Transform GlobalWindDirection { get; private set; }
     
-    private void Awake()
-    {
-        GlobalWindSpeed = windSpeedStartValue;
-        GlobalWindDirection = windDirectionStartValue;
-    }
+    private void Awake() => UpdateWindSpecs(windSpeedStartValue, windDirectionStartValue);
 
-    private void UpdateWindValues()
+    //TODO A time counter to update the wind specs by the time passed ingame
+    private void UpdateWindSpecs(float windSpeedReceived, Transform windDirectionReceived)
     {
-        //Update the actual windSpeed and windDirection during the gameplay here
+        GlobalWindSpeed = windSpeedReceived;
+        GlobalWindDirection = windDirectionReceived;
     }
 }
